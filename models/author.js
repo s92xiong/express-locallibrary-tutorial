@@ -2,7 +2,7 @@
   // first and family names (required, with a maximum of 100 characters), and Date fields for the dates of birth and death.
 
 const mongoose = require("mongoose");
-
+const { DateTime } = require("luxon");
 const Schema = mongoose.Schema;
 
 const AuthorSchema = new Schema({
@@ -28,8 +28,15 @@ AuthorSchema.virtual('url').get(function () {
   return '/catalog/author/' + this._id;
 });
 
-AuthorSchema.virtual('due_back_formatted').get(function () {
-  return DateTime.fromJSDate(this.due_back).toLocaleString(DateTime.DATE_MED);
+// FIX THIS CODE HERE: 
+AuthorSchema.virtual('jojo').get(function () {
+  if (this.date_of_death) {
+    return `(Born: ${DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)}, Died: ${DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED)})`;
+  } else if (this.date_of_birth) {
+    return `(Born: ${DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)})`;
+  } else {
+    return "";
+  }
 });
 
 // Creating a model - Models are created from schemas using the mongoose.model() method
