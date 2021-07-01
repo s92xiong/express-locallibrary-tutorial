@@ -1,4 +1,6 @@
 const Genre = require('../models/genre');
+const Book = require("../models/book");
+const async = require("async");
 
 // Display list of all Genre.
 exports.genre_list = (req, res, next) => {
@@ -6,18 +8,18 @@ exports.genre_list = (req, res, next) => {
     .sort([["name", "ascending"]])
     .exec((err, list_genres) => {
       if (err) return next(err);
-      res.render("genre_list", { title: "Genre List", genre_list: list_genres });
+      res.render("genre_list", { title: "Genre List", list_genres: list_genres });
     });
 };
 
 // Display detail page for a specific Genre.
 exports.genre_detail = (req, res) => {
-	res.send(`NOT IMPLEMENTED: Genre detail: ${request.params.id}`);
+	res.send(`NOT IMPLEMENTED: Genre detail: ${req.params.id}`);
 };
 
 // Display Genre create form on GET.
 exports.genre_create_get = (req, res) => {
-    res.send('NOT IMPLEMENTED: Genre create GET');
+  res.send('NOT IMPLEMENTED: Genre create GET');
 };
 
 // Handle Genre create on POST.
