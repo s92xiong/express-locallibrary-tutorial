@@ -28,12 +28,12 @@ AuthorSchema.virtual('url').get(function () {
   return '/catalog/author/' + this._id;
 });
 
-// FIX THIS CODE HERE: 
-AuthorSchema.virtual('jojo').get(function () {
+// Virtual to format date of birth/death
+AuthorSchema.virtual('years_alive').get(function () {
   if (this.date_of_death) {
-    return `(Born: ${DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)}, Died: ${DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED)})`;
+    return `${DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)} - ${DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED)}`;
   } else if (this.date_of_birth) {
-    return `(Born: ${DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)})`;
+    return DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED);
   } else {
     return "";
   }
