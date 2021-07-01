@@ -7,8 +7,14 @@ const Author = require("../models/author");
 // All methods currently return a string indicating that the associated page has not yet been created. 
 
 // Display list of all Authors
-exports.author_list = (req, res) => {
-  res.send("NOT IMPLEMENTED: Author list");
+exports.author_list = (req, res, next) => {
+  // This method uses the model's find(), sort() and exec() functions to return all Author objects sorted by family_name in alphabetic order
+  Author.find()
+    .sort([["family_name", "ascending"]])
+    .exec((err, list_authors) => {
+      if (err) return next(err);
+      res.render("author_list", { title: "Author List", author_list: list_authors });
+    });
 };
 
 // Display detail page for a specific Author

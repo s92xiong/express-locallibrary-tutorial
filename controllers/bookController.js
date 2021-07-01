@@ -30,8 +30,16 @@ exports.index = (req, res, next) => {
 };
 
 // Display list of all books.
-exports.book_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: Book list');
+  // Get a list of all Book objects in the database then pass these to the template for rendering
+  // Return only the title and author (we don't need the other fields)
+  // Call populate() on Book, specifying the author field—-this will replace the stored book author id with the full author details
+exports.book_list = (req, res, next) => {
+  Book.find({}, "title author")
+    .populate("author")
+    .exec((err, list_books) => {
+      if (err) return next(err);
+      res.render("book_list", { title: "Book List", book_list: list_books });
+    });
 };
 
 // Display detail page for a specific book.

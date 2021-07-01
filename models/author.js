@@ -28,6 +28,10 @@ AuthorSchema.virtual('url').get(function () {
   return '/catalog/author/' + this._id;
 });
 
+AuthorSchema.virtual('due_back_formatted').get(function () {
+  return DateTime.fromJSDate(this.due_back).toLocaleString(DateTime.DATE_MED);
+});
+
 // Creating a model - Models are created from schemas using the mongoose.model() method
 
 // Compile schema into model, then export the model
