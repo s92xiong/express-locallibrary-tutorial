@@ -13,8 +13,26 @@ exports.genre_list = (req, res, next) => {
 };
 
 // Display detail page for a specific Genre.
-exports.genre_detail = (req, res) => {
-	res.send(`NOT IMPLEMENTED: Genre detail: ${req.params.id}`);
+exports.genre_detail = (req, res, next) => {
+  async.parallel({
+    genre: function(cb) {
+      // Get the Genre object with the specific id
+      Genre.findById(req.params.id).exec(cb);
+    },
+    genre_books: function(cb) {
+      // Get all Book objects that have the genre ID in their genre field
+      Book.find({ "genre": req.params.id }).exec(cb);
+    }
+  }, (err, results) => {
+    if (err) return next(err);
+    if (!results.genre) {
+      const someError = new Error("Genre not found");
+      someError.status = 404;
+      return next(err);
+    }
+    // Successful:
+    res.render("genre_detail", { title: "Genre Detail", genre: results.genre, genre_books: results.genre_books });
+  });
 };
 
 // Display Genre create form on GET.
