@@ -23,7 +23,8 @@ AuthorSchema.virtual('lifespan').get(function () {
   return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
 });
 
-// Virtual for author's URL
+// Declare a virtual named "url" that returns the absolute URL required to get a particular instance of the model,
+// we'll use this property in our templates whenever we need to get a link to a particular author
 AuthorSchema.virtual('url').get(function () {
   return '/catalog/author/' + this._id;
 });
@@ -39,11 +40,6 @@ AuthorSchema.virtual('years_alive').get(function () {
   }
 });
 
-// Creating a model - Models are created from schemas using the mongoose.model() method
-
 // Compile schema into model, then export the model
 module.exports = mongoose.model('Author', AuthorSchema);
-
-// We've also declared a virtual for the AuthorSchema named "url" that returns the absolute URL required to get a particular instance of the model 
-  // — we'll use the property in our templates whenever we need to get a link to a particular author.
 
