@@ -238,6 +238,7 @@ exports.book_update_post = [
       });
     }
 
+    // Book data form is valid, update the record:
     Book.findByIdAndUpdate(req.params.id, book, {}, (err, thebook) => {
       if (err) return next(err);
       return res.redirect(thebook.url);
