@@ -106,10 +106,9 @@ exports.author_create_post = [
 ];
 
 
-
 // Display Author delete form on GET
 exports.author_delete_get = (req, res, next) => {
-  async.parllel({
+  async.parallel({
     author: function(cb) { Author.findById(req.params.id).exec(cb) },
     authors_books: function(cb) { Book.find({ "author": req.params.id }).exec(cb) }
   }, (err, results) => {
@@ -117,25 +116,29 @@ exports.author_delete_get = (req, res, next) => {
     // If findById() returns no results, then the author is NOT in the database (nothing to delete), therefore render the list of all authors
     if (!results.author) res.redirect("/catalog/authors");
     // Success:
-    res.render("author_delete", { title: "Delete Author", author: results.author, author_books: results.author_books });
+    res.render("author_delete", { title: "Delete Author", author: results.author, author_books: results.authors_books });
   });
 };
 
 
 // Handle Author delete on POST
-exports.author_delete_post = (req, res) => {
+exports.author_delete_post = (req, res, next) => {
   async.parallel({
+    // Validate that an id has been provided (this is sent via the form body parameters, rather than using the version in the URL)
     author: function(cb) { Author.findById(req.body.authorid).exec(cb) },
     authors_books: function(cb) { Book.find({ "author": req.body.authorid }).exec(cb) }
   }, (err, results) => {
     if (err) return next(err);
     if (results.authors_books.length > 0) {
-      return res.render("author_delete", { title: "Delete Author", author: results.author, author_books: results.author_books });
+      // Author has books. Render the same way as for GET route:
+      return res.render("author_delete", { title: "Delete Author", author: results.author, author_books: results.authors_books });
     }
 
-    Author.findByIdAndRemove(req.body.authorid, function deleteAuthor(error) {
+    // Author has no books. Delete object & redirect to the list of authors.
+    Author.findByIdAndRemove(req.body.authorid, function deleteAuthor(err) {
       if (err) return next(err);
-      res.redirect("catalog/authors");
+      // Success - then go to author list
+      res.redirect("/catalog/authors");
     });
   });
 };

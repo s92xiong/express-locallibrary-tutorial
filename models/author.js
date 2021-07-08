@@ -20,7 +20,15 @@ AuthorSchema.virtual('name').get(function () {
 
 // Virtual for author's lifespan
 AuthorSchema.virtual('lifespan').get(function () {
-  return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
+  var lifetime_string = '';
+  if (this.date_of_birth) {
+    lifetime_string = DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED);
+  }
+  lifetime_string += ' - ';
+  if (this.date_of_death) {
+    lifetime_string += DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED)
+  }
+  return lifetime_string;
 });
 
 // Declare a virtual named "url" that returns the absolute URL required to get a particular instance of the model,
