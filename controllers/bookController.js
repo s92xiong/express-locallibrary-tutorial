@@ -153,8 +153,23 @@ exports.book_delete_get = (req, res, next) => {
 
 
 // Handle book delete on POST.
-exports.book_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Book delete POST');
+exports.book_delete_post = (req, res, next) => {
+  async.parallel({
+    book: function(cb) { Book.findById(req.params.id).exec(cb) },
+    book_instances: function(cb) { BookInstance.find({ "book": req.params.id }).exec(cb) }
+  }, (err, results) => {
+    if (err) return next(err);
+    if (results.book_instances.length > 0) {
+      // Re-render the page because the book still contains bookInstances
+      return res.render("book_delete.pug", { title: "Delete Book", book: results.book, book_instances: results.book_instances });
+    }
+
+    // There are no bookInstances of this book, therefore you can delete the book
+    Book.findByIdAndRemove(req.params.id, function deleteBook(err) {
+      if (err) return next(err);
+      res.redirect("/catalog/books/");
+    });
+  });
 };
 
 
