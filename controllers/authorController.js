@@ -170,16 +170,16 @@ exports.author_update_post = [
       family_name: req.body.family_name,
       date_of_birth: req.body.date_of_birth,
       date_of_death: req.body.date_of_death,
-      _id: req.body.id
+      _id: req.params.id
     });
 
     if (!errors.isEmpty()) {
       return res.render("author_form", { title: "Update Author", author: req.body, errors: errors.array() })
     }
 
-    author.save((err) => {
+    Author.findByIdAndUpdate(req.params.id, author, {}, (err, theAuthor) => {
       if (err) return next(err);
-      res.redirect(author.url);
+      return res.redirect(theAuthor.url);
     });
   },
 ];
