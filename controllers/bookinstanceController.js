@@ -84,8 +84,21 @@ exports.bookinstance_delete_get = (req, res, next) => {
 };
 
 // Handle BookInstance delete on POST.
-exports.bookinstance_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: BookInstance delete POST');
+exports.bookinstance_delete_post = (req, res, next) => {
+  // Get book instance data
+  // Get the book of this book instance, then
+  async.parallel({
+    book_instance: function(cb) { BookInstance.findById(req.params.id).exec(cb) }
+  }, (err, results) => {
+    if (err) return next(err);
+
+    // Delete the book instance (not dependent upon any other data model)
+    BookInstance.findByIdAndRemove(req.params.id, function deleteBookInstance(err) {
+      if (err) return next(err);
+      // If successful, redirect user to the book of the book instance (.book is the id of book)
+      return res.redirect(`/catalog/book/${results.book_instance.book}/`);
+    });
+  });
 };
 
 // Display BookInstance update form on GET.
