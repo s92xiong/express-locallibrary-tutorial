@@ -89,6 +89,7 @@ exports.genre_create_post = [
 // Display Genre delete form on GET.
 exports.genre_delete_get = (req, res, next) => {
   async.parallel({
+    // User can only delete a genre if there are no dependent books using it
     genre: function(cb) { Genre.findById(req.params.id).exec(cb) },
     book_list: function(cb) { Book.find({ "genre": req.params.id }).exec(cb) }
   }, (err, results) => {
@@ -99,8 +100,23 @@ exports.genre_delete_get = (req, res, next) => {
 
 
 // Handle Genre delete on POST.
-exports.genre_delete_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Genre delete POST');
+exports.genre_delete_post = (req, res, next) => {
+  async.parallel({
+    genre: function(cb) { Genre.findById(req.params.id).exec(cb) },
+    book_list: function(cb) { Book.find({ "genre": req.params.id }).exec(cb) }
+  }, (err, results) => {
+    if (err) return next(err);
+    
+    // If genre has books, then re-render the page
+    if (results.book_list.length > 0) {
+      return res.render("genre_delete", { title: "Delete Genre", genre: results.genre, book_list: results.book_list });
+    }
+
+    return Genre.findByIdAndRemove(req.params.id, function deleteGenre(err) {
+      if (err) return next(err);
+      res.redirect("/catalog/genres");
+    })
+  });
 };
 
 

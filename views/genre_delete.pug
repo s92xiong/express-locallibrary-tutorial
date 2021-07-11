@@ -14,8 +14,10 @@ block content
       dl
       each book in book_list
         dt
-          a(href=book.url) #{book.title}
-        dd #{book.summary}
+          ul 
+            li 
+              a(href=book.url) #{book.title}
+        //- dd #{book.summary}
 
   else
     p Do you really want to delete this Genre?
