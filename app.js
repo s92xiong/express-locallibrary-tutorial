@@ -3,10 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+require("dotenv").config();
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const catalogRouter = require("./routes/catalog");
+const catalogRouter = require("./routes/catalog"); // Added extra router for catalog
 
 const app = express();
 
@@ -16,7 +17,8 @@ const app = express();
 const mongoose = require("mongoose");
 
 // Set up default mongoose connection
-const mongoDB = "mongodb+srv://dbMob:MobSpeedwagon@cluster0.xonqa.mongodb.net/local_library?retryWrites=true&w=majority"; // DB URL
+// const mongoDB = "mongodb+srv://dbMob:MobSpeedwagon@cluster0.xonqa.mongodb.net/local_library?retryWrites=true&w=majority"; // DB URL
+const mongoDB = process.env.MONGODB_URL;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Get default connection (connection object)
