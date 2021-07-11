@@ -20,7 +20,7 @@ const mongoose = require("mongoose");
 
 // Set up default mongoose connection
 // const mongoDB = "mongodb+srv://dbMob:MobSpeedwagon@cluster0.xonqa.mongodb.net/local_library?retryWrites=true&w=majority"; // DB URL
-const mongoDB = process.env.MONGODB_URL;
+const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Get default connection (connection object)
